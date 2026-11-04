@@ -52,7 +52,7 @@ TRAINING_PROGRAMS = [
 PASSING_THRESHOLD = 0.70
 KPI_TARGETS = {
     'completion_rate': 0.90,
-    'passing_rate': 0.80,
+    'pct_met_passing': 0.80,
     'knowledge_gain_pct': 0.30,
     'avg_post_score': 0.80,
     'satisfaction_score': 4.0
@@ -184,18 +184,19 @@ def aggregate_by_county(paired: pd.DataFrame, raw: pd.DataFrame) -> pd.DataFrame
         avg_pre_score       = ('pre_score',          'mean'),
         avg_post_score      = ('post_score',         'mean'),
         avg_knowledge_gain  = ('knowledge_gain',     'mean'),
+        avg_knowledge_gain_pct = ('knowledge_gain_pct', 'mean'),
         pct_improved        = ('improved',           'mean'),
         pct_met_passing     = ('met_passing',        'mean'),
         paired_count        = ('staff_id',           'count')
     ).reset_index()
-    
+
     # Merge everything
     county_df = pd.merge(completion_stats, enrollment, on='county', how='left')
     county_df = pd.merge(county_df, gain_stats, on='county', how='left')
-    
+
     # KPI calculations
     county_df['completion_rate']   = (county_df['completions'] / county_df['enrolled']).round(4)
-    county_df['knowledge_gain_pct'] = county_df['avg_knowledge_gain'].round(4)
+    county_df['knowledge_gain_pct'] = county_df['avg_knowledge_gain_pct'].round(4)
     county_df['avg_post_score']     = county_df['avg_post_score'].round(4)
     county_df['satisfaction_score'] = county_df['avg_satisfaction'].round(2)
     
